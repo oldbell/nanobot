@@ -181,7 +181,16 @@ class MyTool(Tool):
                     "Use 'request.channel', 'request.chat_id', or 'request.sender_id' for current routing metadata. "
                     "Use 'model_preset' to switch named model presets. For check without key, shows all config values.",
                 },
-                "value": {"description": "New value (for set). Type must match target (int for max_iterations/context_window_tokens, str for model/model_preset)."},
+                # Perplexity and other strict OpenAI-compat gateways reject untyped
+                # parameters. Prefer string; restricted keys still coerce via expected(type).
+                "value": {
+                    "type": "string",
+                    "description": (
+                        "New value (for set). Pass a string; ints/bools are coerced for "
+                        "typed keys (e.g. max_iterations). For model/model_preset use a "
+                        "plain string."
+                    ),
+                },
             },
             "required": ["action"],
         }
